@@ -41,7 +41,7 @@ def chat_completions(request: ChatCompletionRequest, token: str = Depends(verify
     OpenAI-compatible chat completions endpoint.
     """
     
-    # You can access the input chat prompt with request.message (a list of ChatMessage objects)
+    # You can access the input chat prompt with request.messages (a list of ChatMessage objects)
     # In this example we produce fake data. Replace the lines below with a call to your model.
    
     # This is mock prediction data, the prophet arena prompt will instruct the model to return this 
