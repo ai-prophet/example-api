@@ -1,7 +1,8 @@
 from typing import List, Optional
 import time
 import json
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 
 # Pydantic models for OpenAI compatibility
@@ -10,17 +11,31 @@ class ChatMessage(BaseModel):
     content: str
 
 class ChatCompletionRequest(BaseModel):
-    model: str = "mock-gpt-model"
-    messages: List[ChatMessage]
+    model: str = "mock-gpt-model" # this goes in the onboarding field "Model Name"
     max_tokens: Optional[int] = 512
     temperature: Optional[float] = 0.1
     stream: Optional[bool] = False
 
 app = FastAPI(title="Mock OpenAI-compatible API for ProphetArena Onboarding")
 
+security = HTTPBearer()
+
+# Mock valid token (in production, this would be validated against db or similar)
+VALID_TOKEN = "mock-bearer-token-12345"
+
+def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Basic verification of bearer token"""
+    if credentials.credentials != VALID_TOKEN:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid authentication token",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    return credentials.credentials
+
 
 @app.post("/chat/completions")
-def chat_completions(request: ChatCompletionRequest):
+def chat_completions(request: ChatCompletionRequest, token: str = Depends(verify_token)):
     """
     OpenAI-compatible chat completions endpoint.
     Returns mock prediction data in JSON format that the ProphetArena onboarding test can parse.
@@ -65,6 +80,7 @@ Given this widespread interest and the specific initiatives already underway, I 
             "total_tokens": 150
         }
     }
+
 
 if __name__ == "__main__":
     import uvicorn
