@@ -12,6 +12,7 @@ class ChatMessage(BaseModel):
 
 class ChatCompletionRequest(BaseModel):
     model: str = "mock-gpt-model" # this goes in the onboarding field "Model Name"
+    messages: List[ChatMessage] 
     max_tokens: Optional[int] = 512
     temperature: Optional[float] = 0.1
     stream: Optional[bool] = False
@@ -38,10 +39,13 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
 def chat_completions(request: ChatCompletionRequest, token: str = Depends(verify_token)):
     """
     OpenAI-compatible chat completions endpoint.
-    Returns mock prediction data in JSON format that the ProphetArena onboarding test can parse.
     """
     
-    # Mock prediction data, the prophet arena prompt will instruct the model to return this data in the same format
+    # You can access the input chat prompt with request.message (a list of ChatMessage objects)
+    # In this example we produce fake data. Replace the lines below with a call to your model.
+   
+    # This is mock prediction data, the prophet arena prompt will instruct the model to return this 
+    # data in the same format. Delete this and replace with a call to your model.
     prediction_json = {
         "probabilities": {
             "0": 0.05,
