@@ -30,6 +30,5 @@ This is a simple FastAPI server that provides an OpenAI-compatible `/chat/comple
 ## Note
 
 - This is a mock API for testing purposes only
-- It doesn't actually perform any AI inference
-- All responses are pre-generated mock data
+- It doesn't actually perform any AI inference, all responses are pre-generated mock data
 - The API key validation is bypassed 
